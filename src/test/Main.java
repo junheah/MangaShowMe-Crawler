@@ -9,7 +9,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-
+//this is for testing
 public class Main {
 
 	public static void main(String[] args) {
@@ -18,6 +18,8 @@ public class Main {
 		m.run();
 	}
 	public void run() {
+		
+		/*
 		String view = "https://mangashow.me/bbs/board.php?bo_table=msm_manga&wr_id=";
 		try {
 			Document home = Jsoup.connect("https://mangashow.me/bbs/board.php?bo_table=msm_manga").get();
@@ -38,6 +40,31 @@ public class Main {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+		*/
+		String query = getinput();
+		Search a = new Search(query);
+		ArrayList<Title> titles = a.getResult();
+		int i=0;
+		for(Title t:titles) {
+			System.out.println(i+ ". " + t.getName()+"  |  " + t.getThumb());
+			i++;
+		}
+		int index = Integer.parseInt(getinput());
+		Title selected = titles.get(index);
+		selected.fetchEps();
+		ArrayList<Manga> mlist = selected.getEps();
+		for(Manga m:mlist) {
+			System.out.println(m.getId()+ ". " + m.getName());
+		}
+		
+		index = Integer.parseInt(getinput());
+		Manga man = mlist.get(index);
+		man.fetch();
+		for(String link:man.getImgs()) {
+			System.out.println(link);
+		}
+		
+		
 	}
 	
 	public String getinput() {
