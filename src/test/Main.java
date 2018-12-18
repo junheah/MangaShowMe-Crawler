@@ -29,7 +29,7 @@ public class Main {
 			int index = Integer.parseInt(getinput());
 			String id = list.get(index).select("div.data-container").attr("data-wrid");
 			System.out.println(id);
-			
+			//test
 			Document manga = Jsoup.connect(view + id.toString()).get();
 			Elements strip = manga.selectFirst("div.view-content.scroll-viewer").select("img");
 			for(Element e:strip) {
