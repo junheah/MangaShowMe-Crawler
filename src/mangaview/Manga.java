@@ -1,4 +1,4 @@
-package test;
+package mangaview;
 import java.util.ArrayList;
 import org.jsoup.*;
 import org.jsoup.nodes.Document;

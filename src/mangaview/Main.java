@@ -1,4 +1,4 @@
-package test;
+package mangaview;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -41,6 +41,7 @@ public class Main {
 			e.printStackTrace();
 		}
 		*/
+		
 		String query = getinput();
 		Search a = new Search(query);
 		ArrayList<Title> titles = a.getResult();
