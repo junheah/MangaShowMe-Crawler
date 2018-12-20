@@ -19,12 +19,15 @@ public class Search {
             //stx=쿼리, page=0~
             int page = 0;
             while(true) {
-                Document search = Jsoup.connect("https://mangashow.me/bbs/search.php?stx=" + query + "&page="+page).get();
+                Document search = Jsoup.connect("https://mangashow.me/bbs/search.php?stx=" + query + "&page="+page)
+                		.userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                		.get();
                 Elements items = search.select("div.post-row");
                 if(items.size()<1) break;
                 for (Element item : items) {
-                    result.add(new Title(item.selectFirst("div.img-item").selectFirst("img").attr("alt"),
-                            item.selectFirst("div.img-item").selectFirst("img").attr("src")));
+                	String ntmp = removeParenthesis(item.selectFirst("div.post-subject").selectFirst("a").text());
+                    String ttmp = removeParenthesis(item.selectFirst("div.img-wrap").attr("style").split("\\(")[1].split("\\)")[0]);
+                    result.add(new Title(ntmp,ttmp));
                 }
                 if(items.size()==30) page++;
                 else break;
@@ -36,6 +39,18 @@ public class Search {
 
     public ArrayList<Title> getResult(){
         return result;
+    }
+    
+    public String removeParenthesis(String input){
+        int i = input.indexOf('(');
+        int j = input.indexOf(')');
+        if(i>-1||j>-1){
+            char[] tmp = input.toCharArray();
+            if(i>-1) tmp[i] = ' ';
+            if(j>-1) tmp[j] = ' ';
+            input = String.valueOf(tmp);
+        }
+        return input;
     }
 
     private String query;
