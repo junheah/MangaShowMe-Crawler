@@ -9,6 +9,14 @@ used in [MangaViewAndroid](https://github.com/junheah/MangaViewAndroid)
 ## Usage: ##
 
 ### 검색:
+검색 모드
+```
+0: 제목
+1: 작가 이름
+2: 태그
+3: 첫자음 (인덱스)
+4: 발행 (인덱스)
+```
 
 기본적인 검색
 ```java
