@@ -1,5 +1,6 @@
 # MangaShowMe-Crawler
-망가쇼미 크롤러 by [junheah](https://blog.naver.com/imaginaly) 
+망가쇼미 크롤러 by [junheah](https://blog.naver.com/imaginaly)
+used in [MangaViewAndroid](https://github.com/junheah/MangaViewAndroid)
 
 ## Usage: ##
 
