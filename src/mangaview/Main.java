@@ -18,38 +18,17 @@ public class Main {
 		m.run();
 	}
 	public void run() {
-		
-		/*
-		String view = "https://mangashow.me/bbs/board.php?bo_table=msm_manga&wr_id=";
-		try {
-			Document home = Jsoup.connect("https://mangashow.me/bbs/board.php?bo_table=msm_manga").get();
-			System.out.println(home.text());
-			Elements list = home.select("div.list-row");
-			for(int i = 0; i<list.size(); i++) {
-				System.out.println(i + ". " + list.get(i).selectFirst("div.subject").text());
-			}
-			int index = Integer.parseInt(getinput());
-			String id = list.get(index).select("div.data-container").attr("data-wrid");
-			System.out.println(id);
-			//test
-			Document manga = Jsoup.connect(view + id.toString()).get();
-			Elements strip = manga.selectFirst("div.view-content.scroll-viewer").select("img");
-			for(Element e:strip) {
-				System.out.println(e.selectFirst("img").attr("src"));
-			}
-		}catch(Exception e) {
-			e.printStackTrace();
-		}
-		*/
-		
+		System.out.print("제목 검색:");
 		String query = getinput();
-		Search a = new Search(query);
+		Search a = new Search(query, 0);
+		a.fetch();
 		ArrayList<Title> titles = a.getResult();
 		int i=0;
 		for(Title t:titles) {
 			System.out.println(i+ ". " + t.getName()+"  |  " + t.getThumb());
 			i++;
 		}
+		System.out.print("만화 선택:");
 		int index = Integer.parseInt(getinput());
 		Title selected = titles.get(index);
 		selected.fetchEps();
@@ -57,7 +36,7 @@ public class Main {
 		for(Manga m:mlist) {
 			System.out.println(m.getId()+ ". " + m.getName());
 		}
-		
+		System.out.print("화 선택:");
 		index = Integer.parseInt(getinput());
 		Manga man = mlist.get(index);
 		man.fetch();
