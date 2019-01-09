@@ -1,6 +1,10 @@
 # MangaShowMe-Crawler
-망가쇼미 크롤러 by [junheah](https://blog.naver.com/imaginaly)
+망가쇼미 크롤러 by [junheah](https://github.com/junheah)
+
 used in [MangaViewAndroid](https://github.com/junheah/MangaViewAndroid)
+
+## License: ##
+[GNU General Public License v3.0](LICENSE)
 
 ## Usage: ##
 
@@ -26,7 +30,7 @@ while(!search.isLast()){
 }
 ```
 
-### 만화 정보
+### 만화 정보:
 ```java
 String 제목 = title.getName();
 String 작가 = title.getAuthor();
@@ -39,7 +43,7 @@ title.fetchEps();
 ArrayList<Manga> episodes = title.getEps();
 ```
 
-### 회차 정보
+### 회차 정보:
 ```java
 manga.fetch();
 //제목(객체) 불러오기
