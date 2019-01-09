@@ -1,5 +1,7 @@
-package mangaview;
+package mangaview; // Manga.java
+
 import java.util.ArrayList;
+
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;

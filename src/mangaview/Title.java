@@ -1,9 +1,11 @@
-package mangaview;
+package mangaview; // Title.java
+
 import java.util.ArrayList;
+
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+// import org.jsoup.select.Elements;
 
 public class Title {
 	public Title(String n, String t) {
