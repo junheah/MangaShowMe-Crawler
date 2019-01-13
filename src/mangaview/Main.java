@@ -44,6 +44,14 @@ public class Main {
 			System.out.println(link);
 		}
 		
+		ArrayList<Comment> hey = man.getComments();
+		for(Comment c:man.getComments()) {
+			System.out.println(c.getUser());
+			System.out.println(c.getIcon());
+			System.out.println(c.getTimestamp());
+			System.out.println(c.getContent());
+			System.out.println();
+		}
 		
 	}
 	
