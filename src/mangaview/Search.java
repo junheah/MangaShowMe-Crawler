@@ -15,10 +15,10 @@ public class Search {
     * 2 : 태그
     * 3 : 글자
     * 4 : 발행
+    * 5 : null
+    * 6 : 종합
      */
     public Search(String q, int mode) {
-    	//만화 검색
-    	//fetch 할때마다 결과 한페이지씩 불러옴
         query = q;
         this.mode = mode;
     }
@@ -51,7 +51,12 @@ public class Search {
                     case 4:
                         searchUrl = "https://mangashow.me/bbs/page.php?hid=manga_list&sfl=2&stx=";
                         break;
+                    case 6:
+                        searchUrl = "https://mangashow.me/bbs/page.php?hid=manga_list&";
+                        break;
                 }
+
+                System.out.println("ppppppppppp\n"+searchUrl+query);
                 Document search = Jsoup.connect(searchUrl + query + "&page=" + page)
                         .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
                         .get();
