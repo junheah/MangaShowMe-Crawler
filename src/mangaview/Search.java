@@ -21,10 +21,35 @@ public class Search {
     public Search(String q, int mode) {
         query = q;
         this.mode = mode;
+        if(mode==6) query = "";
     }
 
     public Boolean isLast() {
         return last;
+    }
+    
+    String q0= "", q1 = "", q2 = "", q3 = "";
+    
+    public void addQuery(int i, String q) {
+    	switch(i) {
+    	case 0:
+    		if(q0.length()>0) q0 += ","+q;
+    		else q0 = q;
+    		break;
+    	case 1:
+    		if(q1.length()>0) q1 += ","+q;
+    		else q1 = q;
+    		break;
+    	case 2:
+    		if(q2.length()>0) q2 += ","+q;
+    		else q2 = q;
+    		break;
+    	case 3:
+    		if(q3.length()>0) q3 += ","+q;
+    		else q3 = q;
+    		break;
+    	}
+    	
     }
 
     public void fetch() {
@@ -52,7 +77,7 @@ public class Search {
                         searchUrl = "https://mangashow.me/bbs/page.php?hid=manga_list&sfl=2&stx=";
                         break;
                     case 6:
-                        searchUrl = "https://mangashow.me/bbs/page.php?hid=manga_list&";
+                        searchUrl = "https://mangashow.me/bbs/page.php?hid=manga_list&search_type="+q0+"&_1="+q1+"&_2="+q2+"&_3="+q3;
                         break;
                 }
 
