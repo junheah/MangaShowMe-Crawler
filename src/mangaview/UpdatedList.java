@@ -1,5 +1,6 @@
 package mangaview;
 
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -10,12 +11,12 @@ import java.util.ArrayList;
 
 public class UpdatedList {
     public void UpdatedList(){
-        //최근 추가된 화 목록 불러오기
-    	//fetch 할때마다 결과 한페이지씩 불러옴
+
+        //
     }
-    public void fetch(){
+    public void fetch(String base){
         result = new ArrayList<>();
-        String url = "https://mangashow.me/bbs/board.php?bo_table=msm_manga&page=";
+        String url = base + "/bbs/board.php?bo_table=msm_manga&page=";
         if(!last) {
             try {
                 page++;
@@ -28,7 +29,8 @@ public class UpdatedList {
                     String ttmp = (item.selectFirst("div.thumb").attr("style").split("\\(")[1].split("\\)")[0]);
                     String ntmp = item.selectFirst("div.subject").text().replace('\n',' ');
                     int itmp = Integer.parseInt(item.selectFirst("div.data-container").attr("data-wrid"));
-                    Manga tmp = new Manga(itmp,ntmp);
+                    String dtmp = item.select("div.desc").get(1).text();
+                    Manga tmp = new Manga(itmp,ntmp,dtmp);
                     tmp.addThumb(ttmp);
                     result.add(tmp);
                 }
@@ -47,4 +49,3 @@ public class UpdatedList {
     ArrayList<Manga> result;
     int page = 0;
 }
-

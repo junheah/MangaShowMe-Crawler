@@ -3,10 +3,9 @@ import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import java.util.List;
 
 import java.util.ArrayList;
-
+import java.util.List;
 
 public class Search {
     /* mode
@@ -15,19 +14,47 @@ public class Search {
     * 2 : 태그
     * 3 : 글자
     * 4 : 발행
+    * 5 : null
+    * 6 : 종합
      */
     public Search(String q, int mode) {
-    	//만화 검색
-    	//fetch 할때마다 결과 한페이지씩 불러옴
         query = q;
         this.mode = mode;
+        //if(mode==6) query = "";
     }
 
     public Boolean isLast() {
         return last;
     }
+    // not used in android version since we use seperate TagSearch activity
+    // which requires mode and single query value
+    /*
+    String q0= "", q1 = "", q2 = "", q3 = "";
+    
+    public void addQuery(int i, String q) {
+    	switch(i) {
+    	case 0:
+    		if(q0.length()>0) q0 += ","+q;
+    		else q0 = q;
+    		break;
+    	case 1:
+    		if(q1.length()>0) q1 += ","+q;
+    		else q1 = q;
+    		break;
+    	case 2:
+    		if(q2.length()>0) q2 += ","+q;
+    		else q2 = q;
+    		break;
+    	case 3:
+    		if(q3.length()>0) q3 += ","+q;
+    		else q3 = q;
+    		break;
+    	}
+    	
+    }
+    */
 
-    public void fetch() {
+    public void fetch(String base) {
         result = new ArrayList<>();
         if(!last) {
             try {
@@ -37,21 +64,25 @@ public class Search {
                 String searchUrl = "";
                 switch(mode){
                     case 0:
-                        searchUrl = "https://mangashow.me/bbs/search.php?stx=";
+                        searchUrl = base + "/bbs/search.php?stx=";
                         break;
                     case 1:
-                        searchUrl = "https://mangashow.me/bbs/page.php?hid=manga_list&page=0&sfl=4&stx=";
+                        searchUrl = base + "/bbs/page.php?hid=manga_list&page=0&sfl=4&stx=";
                         break;
                     case 2:
-                        searchUrl = "https://mangashow.me/bbs/page.php?hid=manga_list&sfl=3&stx=";
+                        searchUrl = base + "/bbs/page.php?hid=manga_list&sfl=3&stx=";
                         break;
                     case 3:
-                        searchUrl = "https://mangashow.me/bbs/page.php?hid=manga_list&sfl=1&stx=";
+                        searchUrl = base + "/bbs/page.php?hid=manga_list&sfl=1&stx=";
                         break;
                     case 4:
-                        searchUrl = "https://mangashow.me/bbs/page.php?hid=manga_list&sfl=2&stx=";
+                        searchUrl = base + "/bbs/page.php?hid=manga_list&sfl=2&stx=";
+                        break;
+                    case 6:
+                        searchUrl = base + "/bbs/page.php?hid=manga_list&search_type=";
                         break;
                 }
+
                 Document search = Jsoup.connect(searchUrl + query + "&page=" + page)
                         .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
                         .get();
@@ -72,7 +103,13 @@ public class Search {
                         tags = item.selectFirst("div.tags").select("a").eachText();
                     } catch (Exception e) {
                     }
-                    result.add(new Title(ntmp, ttmp, atmp, tags));
+                    int release = -1;
+                    try{
+                        release = Integer.parseInt(item.selectFirst("div.publish-type").attr("onclick").split("\\(")[1].split("\\)")[0]);
+                    }catch (Exception e){
+
+                    }
+                    result.add(new Title(ntmp, ttmp, atmp, tags, release));
                 }
                 if (items.size() < 30) last = true;
 
@@ -106,4 +143,3 @@ public class Search {
     int page = -1;
     private ArrayList<Title> result;
 }
-
