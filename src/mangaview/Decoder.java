@@ -1,7 +1,7 @@
 package mangaview;
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
+import java.awt.image.BufferedImage;
+import java.awt.Graphics;
 
 public class Decoder {
     int __seed=0;
@@ -10,7 +10,7 @@ public class Decoder {
         __seed = seed/10;
         this.id = id;
     }
-    public Bitmap decode(Bitmap input){
+    public BufferedImage decode(BufferedImage input){
         if(__seed==0) return input;
         int[][] order = new int[25][2];
         for (int i = 0; i < 25; i++) {
@@ -25,8 +25,9 @@ public class Decoder {
             }
         });
         //create new bitmap
-        Bitmap output = Bitmap.createBitmap(input.getWidth(), input.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
+        BufferedImage output = new BufferedImage(input.getWidth(), input.getHeight(), BufferedImage.TYPE_INT_RGB);
+        Graphics canvas = output.getGraphics();
+        //Canvas canvas = new Canvas(output);
         int row_w = input.getWidth() / 5;
         int row_h = input.getHeight() / 5;
         for (int i = 0; i < 25; i++) {
@@ -35,8 +36,10 @@ public class Decoder {
             int oy = i / 5;
             int tx = o[0] % 5;
             int ty = o[0] / 5;
-            Bitmap cropped = Bitmap.createBitmap(input, ox * row_w, oy * row_h, row_w, row_h);
-            canvas.drawBitmap(cropped, tx * row_w, ty * row_h, null);
+            //Bitmap cropped = Bitmap.createBitmap(input, ox * row_w, oy * row_h, row_w, row_h);
+            //canvas.drawBitmap(cropped, tx * row_w, ty * row_h, null);
+            BufferedImage cropped = input.getSubimage(ox * row_w, oy * row_h, row_w, row_h);
+            canvas.drawImage(cropped, tx * row_w, ty * row_h, null);
         }
         return output;
     }

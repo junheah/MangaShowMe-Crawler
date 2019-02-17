@@ -1,7 +1,5 @@
 package mangaview;
-import android.content.Context;
-import android.os.Parcel;
-import android.os.Parcelable;
+
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -11,7 +9,6 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
 
-import org.json.JSONObject;
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -160,7 +157,7 @@ public class Manga {
 
 
             } catch (Exception e) {
-                e.printStackTrace();
+                //
             } finally {
                 if (sconnection != null) {
                     sconnection.disconnect();
@@ -211,17 +208,17 @@ public class Manga {
         return seed;
     }
 
-    public String toString(){
-        JSONObject tmp = new JSONObject();
-        try {
-            tmp.put("id", id);
-            tmp.put("name", name);
-            tmp.put("date", date);
-        }catch (Exception e){
-
-        }
-        return tmp.toString();
-    }
+//    public String toString(){
+//        JSONObject tmp = new JSONObject();
+//        try {
+//            tmp.put("id", id);
+//            tmp.put("name", name);
+//            tmp.put("date", date);
+//        }catch (Exception e){
+//
+//        }
+//        return tmp.toString();
+//    }
 
     private int id;
     String name;
