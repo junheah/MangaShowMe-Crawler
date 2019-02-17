@@ -20,23 +20,15 @@ public class Search {
     public Search(String q, int mode) {
         query = q;
         this.mode = mode;
-<<<<<<< HEAD
         //if(mode==6) query = "";
-=======
-        if(mode==6) query = "";
->>>>>>> ad93ddfa7de18a8c14ce759eab1181e87d0d3c4b
     }
 
     public Boolean isLast() {
         return last;
     }
-<<<<<<< HEAD
     // not used in android version since we use seperate TagSearch activity
     // which requires mode and single query value
     /*
-=======
-    
->>>>>>> ad93ddfa7de18a8c14ce759eab1181e87d0d3c4b
     String q0= "", q1 = "", q2 = "", q3 = "";
     
     public void addQuery(int i, String q) {
@@ -60,10 +52,7 @@ public class Search {
     	}
     	
     }
-<<<<<<< HEAD
     */
-=======
->>>>>>> ad93ddfa7de18a8c14ce759eab1181e87d0d3c4b
 
     public void fetch(String base) {
         result = new ArrayList<>();
@@ -92,15 +81,8 @@ public class Search {
                     case 6:
                         searchUrl = base + "/bbs/page.php?hid=manga_list&search_type=";
                         break;
-                    case 6:
-                        searchUrl = "https://mangashow.me/bbs/page.php?hid=manga_list&search_type="+q0+"&_1="+q1+"&_2="+q2+"&_3="+q3;
-                        break;
                 }
 
-<<<<<<< HEAD
-=======
-                System.out.println("ppppppppppp\n"+searchUrl+query);
->>>>>>> ad93ddfa7de18a8c14ce759eab1181e87d0d3c4b
                 Document search = Jsoup.connect(searchUrl + query + "&page=" + page)
                         .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
                         .get();

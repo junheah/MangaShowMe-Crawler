@@ -129,3 +129,4 @@ public class Title {
     List<String> tags;
     int release;
 }
+

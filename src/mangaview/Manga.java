@@ -19,6 +19,7 @@ import org.jsoup.select.Elements;
 
 import javax.net.ssl.HttpsURLConnection;
 
+
 public class Manga {
     String base;
     public Manga(int i, String n, String d) {
@@ -27,6 +28,7 @@ public class Manga {
         date = d;
     }
     public int getId() {
+        return id;
     }
     public String getName() {
         return name;
@@ -119,7 +121,6 @@ public class Manga {
                 //jsoup parsing
                 Document doc = Jsoup.parse(raw);
                 Elements cs = doc.select("section.comment-media").last().select("div.media");
-                System.out.println(cs.size());
                 for(Element c:cs){
                     String icon, user, timestamp, content;
                     int indent, likes;
@@ -141,7 +142,6 @@ public class Manga {
                 }
 
                 cs = doc.select("section.comment-media.best-comment").last().select("div.media");
-                System.out.println(cs.size());
                 for(Element c:cs){
                     String icon, user, timestamp, content;
                     int indent, likes;
@@ -182,6 +182,7 @@ public class Manga {
                     .get();
             //System.out.println(items.html());
             //Deprecated since 18/12/25
+
             for (Element e : items.selectFirst("div.view-content.scroll-viewer").select("img")) {
                 imgs.add(e.attr("src"));
             }
@@ -232,3 +233,5 @@ public class Manga {
     String date;
     int seed;
 }
+
+

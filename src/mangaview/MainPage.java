@@ -1,4 +1,5 @@
 package mangaview;
+
 import android.content.Context;
 
 import org.jsoup.Jsoup;
@@ -10,6 +11,7 @@ import java.net.HttpCookie;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 
 
 public class MainPage {
