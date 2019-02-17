@@ -3,10 +3,14 @@
 
 used in [MangaViewAndroid](https://github.com/junheah/MangaViewAndroid)
 
+## Download: ##
+[릴리즈](https://github.com/junheah/MangaShowMe-Crawler/releases)
+
 ## License: ##
 [MIT License](LICENSE)
 
 ## Usage: ##
+base URL = "https://site.com" 형태
 
 ### 검색:
 검색 모드
@@ -24,14 +28,14 @@ used in [MangaViewAndroid](https://github.com/junheah/MangaViewAndroid)
 ```java
 Search search = new Search("검색어", 모드);
 //결과 불러오기
-search.fetch();
+search.fetch(base url);
 //결과 반환
 Arraylist<Titles> result = search.getResult();
 ```
 모든 결과 불러오기
 ```java
 Search search = new Search("검색어", 모드);
-search.fetch();
+search.fetch(base url);
 Arraylist<Titles> result = new ArrayList<>();
 while(!search.isLast()){
   //마지막 페이지일 경우 true 반환
@@ -53,7 +57,7 @@ search.addQuery(1, "0");
 search.addQuery(1, "1");
 search.addQuery(2, "0");
 search.addQuery(3, "개그");
-search.fetch();
+search.fetch(base url);
 ```
 
 ### 만화 정보:
@@ -65,13 +69,13 @@ List<String> 태그 = title.getTags();
 ```
 화 목록 불러오기
 ```java
-title.fetchEps();
+title.fetchEps(base url);
 ArrayList<Manga> episodes = title.getEps();
 ```
 
 ### 회차 정보:
 ```java
-manga.fetch();
+manga.fetch(base url);
 //제목(객체) 불러오기
 Title title = manga.getTitle();
 //이미지 링크 불러오기
@@ -93,4 +97,12 @@ String 타임스탬프 = comment.getTimestamp();
 String 내용 = comment.getContent();
 int 인덴트 = comment.getIndent();
 int 좋아요개수 = comment.getLikes();
+```
+
+### 디코딩:
+만화 이미지 디코딩
+```java
+Manga 만화;
+Decoder 디코더 = new Decoder(만화.getSeed(), 만화.getId());
+Bitmap 출력 = 디코더.decode(입력);
 ```
