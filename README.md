@@ -16,6 +16,8 @@ used in [MangaViewAndroid](https://github.com/junheah/MangaViewAndroid)
 2: 태그
 3: 첫자음 (인덱스)
 4: 발행 (인덱스)
+5: 
+6: 종합 (복수 태그)
 ```
 
 기본적인 검색
@@ -36,6 +38,22 @@ while(!search.isLast()){
   search.fetch();
   result.addAll(search.getResult());
 }
+```
+종합 검색
+```java
+Search search = new Search("", 6);
+// 종합 검색시 addQuery()를 통해 검색어를 설정해 주어야 한다
+/* 0: 검색 방법 (1 = AND, 2 = OR)
+ * 1: 첫글자 (0 = ㄱ, 1 = ㄴ, ...)
+ * 2: 발행 (0 = 미분류, 1 = 주간, ...)
+ * 3: 장르/태그
+ */
+search.addQuery(0, "2");
+search.addQuery(1, "0");
+search.addQuery(1, "1");
+search.addQuery(2, "0");
+search.addQuery(3, "개그");
+search.fetch();
 ```
 
 ### 만화 정보:
@@ -60,4 +78,19 @@ Title title = manga.getTitle();
 ArrayList<String> images = manga.getImgs();
 //회차 리스트 불러오기
 ArrayList<Manga> episodes = manga.getEps();
+```
+
+### 댓글:
+화에서 댓글 불러오기
+```java
+ArrayList<Comment> 전체댓글 = manga.getComments();
+ArrayList<Comment> 베스트댓글 = manga.getBestComments();
+```
+```java
+String 유저이름 = comment.getUser();
+String 아이콘 = comment.getIcon();
+String 타임스탬프 = comment.getTimestamp();
+String 내용 = comment.getContent();
+int 인덴트 = comment.getIndent();
+int 좋아요개수 = comment.getLikes();
 ```
