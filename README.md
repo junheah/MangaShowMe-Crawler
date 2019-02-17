@@ -10,7 +10,7 @@ used in [MangaViewAndroid](https://github.com/junheah/MangaViewAndroid)
 [MIT License](LICENSE)
 
 ## Usage: ##
-base URL = "https://site.com" 형태
+baseURL = "https://site.com" 형태
 
 ### 검색:
 검색 모드
@@ -28,14 +28,14 @@ base URL = "https://site.com" 형태
 ```java
 Search search = new Search("검색어", 모드);
 //결과 불러오기
-search.fetch(base url);
+search.fetch(baseURL);
 //결과 반환
 Arraylist<Titles> result = search.getResult();
 ```
 모든 결과 불러오기
 ```java
 Search search = new Search("검색어", 모드);
-search.fetch(base url);
+search.fetch(baseURL);
 Arraylist<Titles> result = new ArrayList<>();
 while(!search.isLast()){
   //마지막 페이지일 경우 true 반환
@@ -57,7 +57,7 @@ search.addQuery(1, "0");
 search.addQuery(1, "1");
 search.addQuery(2, "0");
 search.addQuery(3, "개그");
-search.fetch(base url);
+search.fetch(baseURL);
 ```
 
 ### 만화 정보:
@@ -69,13 +69,13 @@ List<String> 태그 = title.getTags();
 ```
 화 목록 불러오기
 ```java
-title.fetchEps(base url);
+title.fetchEps(baseURL);
 ArrayList<Manga> episodes = title.getEps();
 ```
 
 ### 회차 정보:
 ```java
-manga.fetch(base url);
+manga.fetch(baseURL);
 //제목(객체) 불러오기
 Title title = manga.getTitle();
 //이미지 링크 불러오기
