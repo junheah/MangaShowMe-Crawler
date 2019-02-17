@@ -19,8 +19,6 @@ import org.jsoup.select.Elements;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import ml.melun.mangaview.Preference;
-
 public class Manga {
     String base;
     public Manga(int i, String n, String d) {
@@ -29,7 +27,6 @@ public class Manga {
         date = d;
     }
     public int getId() {
-        return id;
     }
     public String getName() {
         return name;
@@ -210,7 +207,6 @@ public class Manga {
     public ArrayList<Comment> getBestComments() { return bcomments; }
 
     public int getSeed() {
-        System.out.println("mmmmmmmmmm"+seed);
         return seed;
     }
 
