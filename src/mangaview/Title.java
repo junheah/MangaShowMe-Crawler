@@ -23,7 +23,7 @@ public class Title {
     public String getThumb() {
         return thumb;
     }
-    public ArrayList<Manga> getEps(){
+    public List<Manga> getEps(){
         return eps;
     }
     public int getRelease() { return release; }
@@ -37,29 +37,21 @@ public class Title {
                     .get();
             for(Element e:items.select("div.slot")) {
                 eps.add(new Manga(Integer.parseInt(e.attr("data-wrid"))
-                        ,e.selectFirst("div.title").text()
-                        ,e.selectFirst("div.addedAt").text().split(" ")[0]));
+                        ,e.selectFirst("div.title").ownText()
+                        ,e.selectFirst("div.addedAt").ownText().split(" ")[0]));
             }
-            if(thumb.length()==0){
-                thumb = items.selectFirst("div.manga-thumbnail").attr("style").split("\\(")[1].split("\\)")[0];
+            thumb = items.selectFirst("div.manga-thumbnail").attr("style").split("\\(")[1].split("\\)")[0];
+            author = items.selectFirst("a.author").ownText();
+            tags = new ArrayList<>();
+            for(Element e:items.selectFirst("div.manga-tags").select("a.tag")){
+                tags.add(e.ownText());
             }
-            if(author.length()==0){
-                author = items.selectFirst("a.author").text();
-            }
-            if(tags.size()==0){
-                for(Element e:items.selectFirst("div.manga-tags").select("a.tag")){
-                    tags.add(e.text());
-                }
-            }
-            if(release<0){
-                try{
-                    String releaseRaw =  items.selectFirst("div.manga-thumbnail").selectFirst("a.publish_type").attr("href");
-                    release = Integer.parseInt(releaseRaw.substring(releaseRaw.lastIndexOf('=') + 1));
-                }catch (Exception e){
+            try{
+                String releaseRaw =  items.selectFirst("div.manga-thumbnail").selectFirst("a.publish_type").attr("href");
+                release = Integer.parseInt(releaseRaw.substring(releaseRaw.lastIndexOf('=') + 1));
+            }catch (Exception e){
 
-                }
             }
-
         }catch(Exception e) {
             e.printStackTrace();
         }
@@ -98,33 +90,21 @@ public class Title {
         }
     }
 
-    public void setEps(JSONArray list){
-        eps = new ArrayList<>();
-        for(int i=0; i<list.length(); i++){
-            try{
-                JSONObject tmp = new JSONObject(list.get(i).toString());
-                eps.add(new Manga(tmp.getInt("id"),tmp.getString("name"),""));
-            }catch (Exception e){
-
-            }
-        }
+    public void setEps(List<Manga> list){
+        eps = list;
     }
 
     public void removeEps(){
-        eps = new ArrayList<>();
+        if(eps!=null) eps.clear();
     }
 
-    public String toString(){
 
-        return null;
-    }
     public void setBookmark(int b){bookmark = b;}
 
     private String name;
     private String thumb;
-    private ArrayList<Manga> eps;
+    private List<Manga> eps;
     private int bookmark=-1;
-    private ArrayList<Integer> viewed;
     String author;
     List<String> tags;
     int release;

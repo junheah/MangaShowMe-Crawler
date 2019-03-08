@@ -79,7 +79,7 @@ public class Search {
                         searchUrl = base + "/bbs/page.php?hid=manga_list&sfl=2&stx=";
                         break;
                     case 6:
-                        searchUrl = base + "/bbs/page.php?hid=manga_list&search_type=";
+                        searchUrl = base + "/bbs/page.php?hid=manga_list&";
                         break;
                 }
 
@@ -90,7 +90,7 @@ public class Search {
                 if (items.size() < 1) last = true;
 
                 for (Element item : items) {
-                    String ntmp = (item.selectFirst("div.manga-subject").selectFirst("a").text());
+                    String ntmp = (item.selectFirst("div.manga-subject").selectFirst("a").ownText());
                     String ttmp = (item.selectFirst("div.img-wrap-back").attr("style").split("\\(")[1].split("\\)")[0]);
                     String atmp = "";
                     try {

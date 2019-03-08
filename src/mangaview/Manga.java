@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONObject;
 import org.jsoup.*;
@@ -19,6 +20,7 @@ import org.jsoup.select.Elements;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import ml.melun.mangaview.Preference;
 
 public class Manga {
     String base;
@@ -39,6 +41,10 @@ public class Manga {
     }
     public String getDate() {
         return date;
+    }
+
+    public void setImgs(List<String> imgs){
+        this.imgs = imgs;
     }
 
     public String getThumb() {
@@ -121,6 +127,7 @@ public class Manga {
                 //jsoup parsing
                 Document doc = Jsoup.parse(raw);
                 Elements cs = doc.select("section.comment-media").last().select("div.media");
+                System.out.println(cs.size());
                 for(Element c:cs){
                     String icon, user, timestamp, content;
                     int indent, likes;
@@ -128,20 +135,21 @@ public class Manga {
                     if(!i.isEmpty()) {
                         icon = i.get(0).attr("src");
                     }else icon = "";
-                    user = c.selectFirst("span.member").text();
-                    timestamp = c.selectFirst("span.media-info").selectFirst("span").text();
-                    content = c.selectFirst("div.media-content").selectFirst("textarea").text();
+                    user = c.selectFirst("span.member").ownText();
+                    timestamp = c.selectFirst("span.media-info").selectFirst("span").ownText();
+                    content = c.selectFirst("div.media-content").selectFirst("textarea").ownText();
                     String indentStr = c.attr("style");
                     if(indentStr.length()>0) {
                         String indentStrSplit = indentStr.split(":")[1].split("px")[0];
                         int indentRaw = Integer.parseInt(indentStrSplit);
                         indent = indentRaw / 64;
                     }else indent = 0;
-                    likes = Integer.parseInt(c.selectFirst("a.cmt-good").selectFirst("span").text());
+                    likes = Integer.parseInt(c.selectFirst("a.cmt-good").selectFirst("span").ownText());
                     comments.add(new Comment(user, timestamp, icon, content,indent, likes));
                 }
 
                 cs = doc.select("section.comment-media.best-comment").last().select("div.media");
+                System.out.println(cs.size());
                 for(Element c:cs){
                     String icon, user, timestamp, content;
                     int indent, likes;
@@ -149,12 +157,12 @@ public class Manga {
                     if(!i.isEmpty()) {
                         icon = i.get(0).attr("src");
                     }else icon = "";
-                    user = c.selectFirst("span.member").text();
-                    timestamp = c.selectFirst("span.media-info").selectFirst("span").text();
-                    content = c.selectFirst("div.commtent-content").text();
+                    user = c.selectFirst("span.member").ownText();
+                    timestamp = c.selectFirst("span.media-info").selectFirst("span").ownText();
+                    content = c.selectFirst("div.commtent-content").ownText();
                     String indentStr = c.attr("style");
                     indent = 0;
-                    likes = Integer.parseInt(c.selectFirst("a.cmt-good").selectFirst("span").text());
+                    likes = Integer.parseInt(c.selectFirst("a.cmt-good").selectFirst("span").ownText());
                     bcomments.add(new Comment(user, timestamp, icon, content,indent, likes));
                 }
 
@@ -192,7 +200,7 @@ public class Manga {
         }
     }
 
-    public ArrayList<Manga> getEps() {
+    public List<Manga> getEps() {
         return eps;
     }
 
@@ -200,12 +208,12 @@ public class Manga {
         return title;
     }
 
-    public ArrayList<String> getImgs(){
+    public List<String> getImgs(){
         return imgs;
     }
-    public ArrayList<Comment> getComments(){ return comments; }
+    public List<Comment> getComments(){ return comments; }
 
-    public ArrayList<Comment> getBestComments() { return bcomments; }
+    public List<Comment> getBestComments() { return bcomments; }
 
     public int getSeed() {
         return seed;
@@ -223,15 +231,35 @@ public class Manga {
         return tmp.toString();
     }
 
+    public void setTitle(Title title) {
+        this.title = title;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return this.id == ((Manga)obj).getId();
+    }
+    @Override
+    public int hashCode() {
+        return id;
+    }
+
+    public void setOfflineName(String offlineName) {
+        this.offlineName = offlineName;
+    }
+
+    public String getOfflineName(){
+        return this.offlineName;
+    }
     private int id;
     String name;
-    ArrayList<Manga> eps;
-    ArrayList<String> imgs;
-    ArrayList<Comment> comments, bcomments;
+    List<Manga> eps;
+    List<String> imgs;
+    List<Comment> comments, bcomments;
+    String offlineName;
     String thumb;
     Title title;
     String date;
     int seed;
 }
-
 

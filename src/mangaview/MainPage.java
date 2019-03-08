@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import ml.melun.mangaview.Preference;
 
 
 public class MainPage {
@@ -39,7 +40,7 @@ public class MainPage {
             for(Element e: rank){
                 String[] tmp_link = e.selectFirst("a").attr("href").split("=");
                 int tmp_id = Integer.parseInt(tmp_link[tmp_link.length-1]);
-                String tmp_title = e.selectFirst("div.subject").text();
+                String tmp_title = e.selectFirst("div.subject").ownText();
                 ranking.add(new Manga(tmp_id, tmp_title,""));
             }
         }catch (Exception e){
