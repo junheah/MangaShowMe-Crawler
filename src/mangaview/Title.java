@@ -1,11 +1,12 @@
 package mangaview;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.jsoup.*;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
+
+import okhttp3.Response;
 
 public class Title {
     public Title(String n, String t, String a, List<String> tg, int r) {
@@ -21,47 +22,41 @@ public class Title {
     public String getThumb() {
         return thumb;
     }
-    public ArrayList<Manga> getEps(){
+    public List<Manga> getEps(){
         return eps;
     }
     public int getRelease() { return release; }
 
-    public void fetchEps(String base) {
+    public void fetchEps(CustomHttpClient client) {
         //fetch episodes
         try {
             eps = new ArrayList<>();
-            Document items = Jsoup.connect(base + "/bbs/page.php?hid=manga_detail&manga_name="+name)
-                    .userAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
-                    .get();
+            Response response = client.get("/bbs/page.php?hid=manga_detail&manga_name="+ URLEncoder.encode(name,"UTF-8"));
+            Document items = Jsoup.parse(response.body().string());
             for(Element e:items.select("div.slot")) {
                 eps.add(new Manga(Integer.parseInt(e.attr("data-wrid"))
-                        ,e.selectFirst("div.title").text()
-                        ,e.selectFirst("div.addedAt").text().split(" ")[0]));
+                        ,e.selectFirst("div.title").ownText()
+                        ,e.selectFirst("div.addedAt").ownText().split(" ")[0]));
             }
-            if(thumb.length()==0){
-                thumb = items.selectFirst("div.manga-thumbnail").attr("style").split("\\(")[1].split("\\)")[0];
+            thumb = items.selectFirst("div.manga-thumbnail").attr("style").split("\\(")[1].split("\\)")[0];
+            author = items.selectFirst("a.author").ownText();
+            tags = new ArrayList<>();
+            for(Element e:items.selectFirst("div.manga-tags").select("a.tag")){
+                tags.add(e.ownText());
             }
-            if(author.length()==0){
-                author = items.selectFirst("a.author").text();
-            }
-            if(tags.size()==0){
-                for(Element e:items.selectFirst("div.manga-tags").select("a.tag")){
-                    tags.add(e.text());
-                }
-            }
-            if(release<0){
-                try{
-                    String releaseRaw =  items.selectFirst("div.manga-thumbnail").selectFirst("a.publish_type").attr("href");
-                    release = Integer.parseInt(releaseRaw.substring(releaseRaw.lastIndexOf('=') + 1));
-                }catch (Exception e){
+            try{
+                String releaseRaw =  items.selectFirst("div.manga-thumbnail").selectFirst("a.publish_type").attr("href");
+                release = Integer.parseInt(releaseRaw.substring(releaseRaw.lastIndexOf('=') + 1));
+            }catch (Exception e){
 
-                }
             }
-
+            response.close();
         }catch(Exception e) {
             e.printStackTrace();
         }
     }
+
+
     public String getAuthor(){
         if(author==null) return "";
         return author;
@@ -96,35 +91,24 @@ public class Title {
         }
     }
 
-//    public void setEps(JSONArray list){
-//        eps = new ArrayList<>();
-//        for(int i=0; i<list.length(); i++){
-//            try{
-//                JSONObject tmp = new JSONObject(list.get(i).toString());
-//                eps.add(new Manga(tmp.getInt("id"),tmp.getString("name"),""));
-//            }catch (Exception e){
-//
-//            }
-//        }
-//    }
+    public void setEps(List<Manga> list){
+        eps = list;
+    }
 
     public void removeEps(){
-        eps = new ArrayList<>();
+        if(eps!=null) eps.clear();
     }
 
-    public String toString(){
 
-        return null;
-    }
     public void setBookmark(int b){bookmark = b;}
 
     private String name;
     private String thumb;
-    private ArrayList<Manga> eps;
+    private List<Manga> eps;
     private int bookmark=-1;
-    private ArrayList<Integer> viewed;
     String author;
     List<String> tags;
     int release;
 }
+
 
