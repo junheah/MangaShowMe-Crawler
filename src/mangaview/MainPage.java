@@ -57,7 +57,7 @@ public class MainPage {
         }
     }
 
-    void rankingWidgetLiParser(Elements input, List output){
+    void rankingWidgetLiParser(Elements input, List<Manga> output){
         for(Element e: input){
             String[] tmp_link = e.selectFirst("a").attr("href").split("=");
             int tmp_id = Integer.parseInt(tmp_link[tmp_link.length-1]);

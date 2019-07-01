@@ -4,10 +4,6 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,8 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
-import javax.net.ssl.HttpsURLConnection;
-
 import org.json.JSONObject;
 
 import okhttp3.FormBody;
@@ -312,7 +306,7 @@ public class Main {
 				Response r = null;
 				try {
 
-					String target = useSecond && m.getImgs(true).get(i).length() > 1 ? m.getImgs(true).get(i)
+					String target = hasSecond && useSecond && m.getImgs(true).get(i).length() > 1 ? m.getImgs(true).get(i)
 							: urls.get(i);
 					target = error ? target.replace("img.", "s3.") : target;
 
@@ -320,7 +314,7 @@ public class Main {
 
 					ResponseBody body = r.body();
 					int code = r.code();
-					
+
 					if (code >= 300 && code < 400) {
 						// follow redirect
 						String newLoc = r.header("location");
@@ -330,7 +324,7 @@ public class Main {
 						body = r.body();
 						code = r.code();
 					}
-					
+
 					if (code > 400) {
 						r.close();
 						// error code: trigger flags and retry
@@ -346,14 +340,14 @@ public class Main {
 						// retry
 						continue;
 					}
-					
+
 					BufferedImage image = ImageIO.read(body.byteStream());
 
 					image = d.decode(image);
 					int height = image.getHeight();
 					int width = image.getWidth();
-					
-					if(height<=1 || width <=1)
+
+					if (height <= 1 || width <= 1)
 						continue;
 
 					// trim image
@@ -373,7 +367,7 @@ public class Main {
 						ImageIO.write(image, "jpg", outputFile);
 						counter++;
 					}
-					//save success
+					// save success
 					r.close();
 					break;
 

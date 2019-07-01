@@ -1,13 +1,7 @@
 package mangaview;
 
-import java.io.DataOutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Map;
-
-import javax.net.ssl.HttpsURLConnection;
 
 import okhttp3.FormBody;
 import okhttp3.RequestBody;

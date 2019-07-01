@@ -1,8 +1,5 @@
 package mangaview;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -177,7 +174,6 @@ public class Manga {
                     user = c.selectFirst("span.member").ownText();
                     timestamp = c.selectFirst("span.media-info").selectFirst("span").text();
                     content = c.selectFirst("div.commtent-content").ownText();
-                    String indentStr = c.attr("style");
                     indent = 0;
                     likes = Integer.parseInt(c.selectFirst("a.cmt-good").selectFirst("span").text());
                     level = Integer.parseInt(c.selectFirst("span.lv-icon").text());

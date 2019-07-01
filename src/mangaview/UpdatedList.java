@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import okhttp3.Response;
 
 public class UpdatedList {
-    public void UpdatedList(){
+    public UpdatedList(){
         //
     }
     public void fetch(CustomHttpClient client){
