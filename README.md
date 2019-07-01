@@ -1,10 +1,10 @@
 # MangaView
 마나모아 크롤러
 
-used in [MangaViewAndroid](https://github.com/junheah/MangaViewAndroid)
+그냥 다운로더가 필요하면 [java-only 브랜치로](https://github.com/junheah/MangaView/tree/java-only)
 
-## Download: ##
-[릴리즈](https://github.com/junheah/MangaView/releases)
+
+used in [MangaViewAndroid](https://github.com/junheah/MangaViewAndroid)
 
 ## License: ##
 [MIT License](LICENSE)
