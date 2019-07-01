@@ -1,6 +1,5 @@
 package mangaview;
 
-
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -27,15 +26,16 @@ public class UpdatedList {
                 for(Element item : items){
                     String ttmp = item.selectFirst("div.img-item").selectFirst("img").attr("src");
                     String ntmp = item.selectFirst("div.post-subject").selectFirst("a").ownText().replace('\n',' ');
-                    String title = java.net.URLDecoder.decode(item.selectFirst("div.post-info").selectFirst("a.btn").attr("href").split("manga_name=")[1], "UTF-8");
+                    String idStr = item.selectFirst("div.post-info").selectFirst("a").attr("href").split("manga_id=")[1];
+                    int id = Integer.parseInt(idStr);
 
                     String idRaw = item.selectFirst("div.post-image").selectFirst("a.ellipsis").attr("href");
                     int itmp = Integer.parseInt(idRaw.substring(idRaw.lastIndexOf("=")+1));
 
                     String dtmp = item.selectFirst("div.post-info").selectFirst("span").ownText();
 
-                    Manga tmp = new Manga(itmp,ntmp,dtmp);
-                    tmp.setTitle(new Title(title,"","",new ArrayList<String>(), -1));
+                    Manga tmp = new Manga(0,itmp,ntmp,dtmp);
+                    tmp.setTitle(new Title("","","",new ArrayList<String>(), -1, id));
                     tmp.addThumb(ttmp);
                     result.add(tmp);
                 }
@@ -52,8 +52,11 @@ public class UpdatedList {
     }
     public boolean isLast(){return last;}
 
+    
+    public void firstPage() {
+    	this.page =0;
+    }
     Boolean last = false;
     ArrayList<Manga> result;
     int page = 0;
 }
-

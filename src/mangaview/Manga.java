@@ -1,10 +1,9 @@
 package mangaview;
 
-package ml.melun.mangaview.mangaview;
-
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,11 +19,21 @@ import okhttp3.Response;
 
 public class Manga {
     String base;
-    public Manga(int i, String n, String d) {
+    int index;
+    public Manga(int index, int i, String n, String d) {
+    	this.index = index;
         id = i;
         name = n;
         date = d;
     }
+    public Manga(String url) {
+    	this.id = Integer.parseInt(url.split("wr_id=")[1].split("&")[0]);
+    }
+    
+    public int getRealIndex() {
+    	return index;
+    }
+    
     public int getId() {
         return id;
     }
@@ -66,15 +75,11 @@ public class Manga {
 
             Response response = client.get("/bbs/board.php?bo_table=manga&wr_id="+id, doLogin, cookie);
             try {
-                InputStream stream = response.body().byteStream();
+                String raw = response.body().string();
                 if(listener!=null) listener.setMessage("페이지 읽는중");
-                BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
                 //StringBuffer buffer = new StringBuffer();
-                String line = "";
-                String raw = "";
-                while ((line = reader.readLine()) != null) {
+                for (String line : raw.split(System.getProperty("line.separator"))) {
                     //save as raw html for jsoup
-                    raw += line;
                     if(line.contains("var img_list =")) {
                         if(listener!=null) listener.setMessage("이미지 리스트 읽는중");
                         String imgStr = line;
@@ -98,24 +103,31 @@ public class Manga {
                                 imgs1.add(imgUrl);
                             }
                         }
-                    }else if(line.contains("var only_chapter =")){
-                        if(listener!=null) listener.setMessage("화 목록 읽는중");
-                        String epsStr = line;
-                        String[] epsStrs = epsStr.split("\"");
-                        //remove backslash
-                        for (int i = 3; i < epsStrs.length; i += 4) {
-                            eps.add(new Manga(Integer.parseInt(epsStrs[i]),epsStrs[i-2],""));
-                        }
-                    }else if(line.contains("var view_cnt =")){
+                    }
+//                    else if(line.contains("var only_chapter =")){
+//                        if(listener!=null) listener.setMessage("화 목록 읽는중");
+//                        String epsStr = line;
+//                        String[] epsStrs = epsStr.split("\"");
+//                        //remove backslash
+//                        for (int i = 3; i < epsStrs.length; i += 4) {
+//                            eps.add(new Manga(Integer.parseInt(epsStrs[i]),epsStrs[i-2],""));
+//                        }
+//                    }
+                    else if(line.contains("var view_cnt =")){
                         String seedt = line.substring(0,line.length()-1);
                         seed = Integer.parseInt(seedt.split(" ")[3]);
                     }else if(line.contains("var manga404 = ")){
                         reported = Boolean.parseBoolean(line.split("=")[1].split(";")[0].split(" ")[1]);
+                    }else if(line.contains("var link =")){
+                        String idStr = line.substring(line.indexOf("manga_id=")+9, line.indexOf("&"));
+                        //System.out.println(idStr);
+                        String titleName = URLDecoder.decode(line.substring(line.indexOf("manga_name=")+11,line.length()-2),"UTF-8");
+                        //System.out.println(titleName);
+                        title = new Title(titleName,"","",new ArrayList<String>(), -1, Integer.parseInt(idStr));
                     }
 
                     //if(imgs.size()>0 && eps.size()>0) break;
                 }
-
 
                 //jsoup parsing
                 Document doc = Jsoup.parse(raw);
@@ -123,8 +135,8 @@ public class Manga {
                 //parse title
                 if(title==null){
                     String href = doc.selectFirst("div.comic-navbar").select("a").get(3).attr("href");
-                    String name = href.substring(href.indexOf("manga_name=")+11);
-                    title = new Title(java.net.URLDecoder.decode(name, "UTF-8"),"","",new ArrayList<String>(), -1);
+                    String idStr = href.substring(href.indexOf("manga_id=")+11);
+                    title = new Title("","","",new ArrayList<String>(), -1, Integer.parseInt(idStr));
                 }
 
                 //parse name
@@ -173,7 +185,7 @@ public class Manga {
                 }
 
             } catch (Exception e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
             if(response!=null){
                 response.close();
@@ -192,7 +204,10 @@ public class Manga {
     }
 
     public List<String> getImgs(){
-        if(imgs1.size()>0){
+        return getImgs(false);
+    }
+    public List<String> getImgs(Boolean second){
+        if(second){
             return imgs1;
         }
         return imgs;
@@ -263,6 +278,4 @@ public class Manga {
         void setMessage(String msg);
     }
 }
-
-
 

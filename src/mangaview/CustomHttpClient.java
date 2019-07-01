@@ -1,6 +1,5 @@
 package mangaview;
 
-
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -16,27 +15,23 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
-import ml.melun.mangaview.Preference;
 import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.dnsoverhttps.DnsOverHttps;
 
 public class CustomHttpClient {
     OkHttpClient client;
-    //CloudFlareDns cloudflareDns;
-    Boolean isloaded = false;
-    Preference p ;
+    Preference p;
+    Map<String,String> cfc;
 
     public CustomHttpClient(Preference p){
         this.p = p;
         this.client = getUnsafeOkHttpClient().followRedirects(false).followSslRedirects(false).build();
-        //this.client = new OkHttpClient.Builder().build();
+        this.cfc = new HashMap<>();
     }
-
 
     public Response getRaw(String url, Map<String, String> cookies){
 //        if(!isloaded){
@@ -49,14 +44,21 @@ public class CustomHttpClient {
             for(String key : cookies.keySet()){
                 cookie += key + '=' + cookies.get(key) + "; ";
             }
+
             Request request = new Request.Builder()
                     .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
                     .addHeader("Cookie", cookie)
+                    .addHeader("Accept", "*")
                     .url(url)
                     .get()
                     .build();
             response = client.newCall(request)
                     .execute();
+//            if(response != null){
+//                if(response.code()>=500){
+//                    System.out.println("cf");
+//                }
+//            }
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -65,10 +67,10 @@ public class CustomHttpClient {
 
     public Response get(String url, Boolean doLogin){
         Map<String, String> cookies = new HashMap<>();
-        Login login = p.getLogin();
-        if(doLogin && login!=null){
-            login.buildCookie(cookies);
-        }
+//        Login login = p.getLogin();
+//        if(doLogin && login!=null){
+//            login.buildCookie(cookies);
+//        }
         return getRaw(p.getUrl()+url,cookies);
     }
     public Response get(String url){
@@ -76,10 +78,10 @@ public class CustomHttpClient {
     }
 
     public Response get(String url,Boolean doLogin, Map<String, String> customCookie){
-        Login login = p.getLogin();
-        if(doLogin && login!=null){
-            login.buildCookie(customCookie);
-        }
+//        Login login = p.getLogin();
+//        if(doLogin && login!=null){
+//            login.buildCookie(customCookie);
+//        }
         return getRaw(p.getUrl()+url, customCookie);
     }
 
@@ -91,9 +93,10 @@ public class CustomHttpClient {
         Response response = null;
         try {
             String cookie = "";
-            if(p.getLogin()!=null){
-                cookie = p.getLogin().getCookie(true);
-            }
+//            if(p.getLogin()!=null){
+//                cookie = p.getLogin().getCookie(true);
+//            }
+
             Request request = new Request.Builder()
                     .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
                     .addHeader("Cookie", cookie)
@@ -107,6 +110,29 @@ public class CustomHttpClient {
         }
         return response;
 
+    }
+    
+    public Response postRaw(String url, RequestBody body, Map<String,String> cookiem) {
+    	Response response = null;
+        try {
+            String cookie = "";
+            
+            for(String key: cookiem.keySet()) {
+            	cookie+= key+'='+cookiem.get(key)+';';
+            }
+
+            Request request = new Request.Builder()
+                    .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36")
+                    .addHeader("Cookie", cookie)
+                    .url(url)
+                    .post(body)
+                    .build();
+            response = client.newCall(request)
+                    .execute();
+        }catch (Exception e){
+
+        }
+        return response;
     }
 
     /*
@@ -154,5 +180,22 @@ public class CustomHttpClient {
             throw new RuntimeException(e);
         }
 
+    }
+
+
+    public void setCookie(String raw){
+        this.cfc = new HashMap<>();
+        String[] splitted = raw.split(";");
+        for(String s : splitted){
+            String[] s2 = s.split("=");
+            String key = s2[0];
+            String val = s2[1];
+            if(key.indexOf(' ')==0){
+                key = key.substring(1);
+            }
+            if(!key.contains("PHPSESSID")) {
+                cfc.put(key,val);
+            }
+        }
     }
 }
