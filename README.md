@@ -1,10 +1,10 @@
-# MangaShowMe-Crawler
-망가쇼미 크롤러 by [junheah](https://github.com/junheah)
+# MangaView
+마나모아 크롤러
 
 used in [MangaViewAndroid](https://github.com/junheah/MangaViewAndroid)
 
 ## Download: ##
-[릴리즈](https://github.com/junheah/MangaShowMe-Crawler/releases)
+[릴리즈](https://github.com/junheah/MangaView/releases)
 
 ## License: ##
 [MIT License](LICENSE)
