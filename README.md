@@ -13,6 +13,3 @@ windows executable binaries are wrapped using [launch4j](http://launch4j.sourcef
 - url로 만화 다운로드
 - 최신만화 댓글 봇(베타)
 
-## 요구사항: ##
-- jre 9 이상
-
