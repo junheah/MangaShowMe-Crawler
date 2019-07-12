@@ -372,7 +372,7 @@ public class Main {
 					break;
 
 				} catch (Exception e) {
-					r.close();
+					if(r!=null) r.close();
 					if (!error && !useSecond) {
 						error = true;
 					} else if (error && !useSecond) {
