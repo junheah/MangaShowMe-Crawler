@@ -1,5 +1,5 @@
 # MangaView
-마나모아 크롤러
+마나모아 스크래이퍼
 
 그냥 다운로더가 필요하면 [java-only 브랜치로](https://github.com/junheah/MangaView/tree/java-only)
 
