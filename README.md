@@ -1,10 +1,7 @@
 # MangaView
-마나모아 스크래이퍼
+[마나모아 앱](https://github.com/junheah/MangaViewAndroid) 에서 사용된 파서
 
-그냥 다운로더가 필요하면 [java-only 브랜치로](https://github.com/junheah/MangaView/tree/java-only)
-
-
-used in [MangaViewAndroid](https://github.com/junheah/MangaViewAndroid)
+라이브러리가 아닌 stand-alone 다운로더가 필요하면 [java-only 브랜치로](https://github.com/junheah/MangaView/tree/java-only)
 
 ## License: ##
 [MIT License](LICENSE)
