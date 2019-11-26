@@ -56,6 +56,8 @@ public class CustomHttpClient {
 //            }
         }catch (Exception e){
             e.printStackTrace();
+            response.close();
+            return null;
         }
         return response;
     }

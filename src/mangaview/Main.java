@@ -3,7 +3,11 @@ package mangaview;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,12 +15,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.imageio.ImageIO;
+import javax.net.ssl.HttpsURLConnection;
+
 import org.json.JSONObject;
 
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 
 public class Main {
 
@@ -298,50 +303,58 @@ public class Main {
 		int counter = 0;
 
 		// download images
+		int prevBufferSize = 0;
 		for (int i = 0; i < urls.size(); i++) {
-			System.out.print("[" + (i + 1) + "/" + urls.size() + "]\r");
+			for(int j=0; j<prevBufferSize; j++)
+				System.out.print(' ');
+			System.out.print('\r');
+			String buf = "[" + (i + 1) + "/" + urls.size() + "] ";
+			prevBufferSize = buf.length();
+			System.out.print(buf);
 
 			boolean error = false, useSecond = false;
 			for (int tries = 10; tries >= 0; tries--) {
-				Response r = null;
 				try {
 
 					String target = hasSecond && useSecond && m.getImgs(true).get(i).length() > 1 ? m.getImgs(true).get(i)
 							: urls.get(i);
-					target = error ? target.replace("img.", "s3.") : target;
+					if(error && !useSecond){
+                        target = target.indexOf("img.") > -1 ? target.replace("img.","s3.") : target.replace("://", "://s3.");
+                    }
+					buf = target+"\r";
+					prevBufferSize += buf.length();
+					System.out.print(buf);
 
-					r = c.getRaw(target, new HashMap<String, String>());
+		            URL url = new URL(target);
+		            if(url.getProtocol().toLowerCase().equals("https")) {
+		                HttpsURLConnection init = (HttpsURLConnection) url.openConnection();
+		                int responseCode = init.getResponseCode();
+		                if (responseCode >= 300 && responseCode<400) {
+		                    url = new URL(init.getHeaderField("location"));
+		                }else if(responseCode>=400){
+		                    throw new Exception();
+		                }
+		            }else{
+		                HttpURLConnection init = (HttpURLConnection) url.openConnection();
+		                int responseCode = init.getResponseCode();
+		                if (responseCode >= 300 && responseCode<400) {
+		                    url = new URL(init.getHeaderField("location"));
+		                }else if(responseCode>=400){
+		                	throw new Exception();
+		                }
+		            }
+		            //String fileType = url.toString().substring(url.toString().lastIndexOf('.') + 1);
+		            URLConnection connection = url.openConnection();
 
-					ResponseBody body = r.body();
-					int code = r.code();
+		            String type = connection.getHeaderField("Content-Type");
 
-					if (code >= 300 && code < 400) {
-						// follow redirect
-						String newLoc = r.header("location");
-						r.close();
-						// get response from new location
-						r = c.getRaw(newLoc, new HashMap<String, String>());
-						body = r.body();
-						code = r.code();
-					}
-
-					if (code > 400) {
-						r.close();
-						// error code: trigger flags and retry
-						if (!error && !useSecond) {
-							error = true;
-						} else if (error && !useSecond) {
-							error = false;
-							useSecond = true;
-						} else {
-							error = false;
-							useSecond = false;
-						}
-						// retry
-						continue;
-					}
-
-					BufferedImage image = ImageIO.read(body.byteStream());
+		            if(!type.startsWith("image/")) {
+		                //following file is not image
+		            	throw new Exception();
+		            }
+		            
+		            InputStream in = connection.getInputStream();
+		            BufferedImage image = ImageIO.read(in);
 
 					image = d.decode(image);
 					int height = image.getHeight();
@@ -367,12 +380,10 @@ public class Main {
 						ImageIO.write(image, "jpg", outputFile);
 						counter++;
 					}
-					// save success
-					r.close();
+					in.close();
 					break;
 
 				} catch (Exception e) {
-					if(r!=null) r.close();
 					if (!error && !useSecond) {
 						error = true;
 					} else if (error && !useSecond) {
@@ -386,9 +397,12 @@ public class Main {
 				}
 			}
 		}
-		System.out.print("              \r");
+		for(int j=0; j<prevBufferSize; j++)
+			System.out.print(' ');
+		System.out.print('\n');
 		// in case imgStepSize grounds to zero
 	}
+
 
 	public class SpinnerThread extends Thread {
 		boolean running = false;
