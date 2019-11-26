@@ -11,5 +11,11 @@
 	<classpathentry kind="lib" path="libs/okhttp-3.9.0.jar"/>
 	<classpathentry kind="lib" path="libs/okio-1.13.0.jar"/>
 	<classpathentry kind="lib" path="libs/java-json.jar"/>
+	<classpathentry kind="lib" path="libs/imageio-jpeg-3.4.2.jar"/>
+	<classpathentry kind="lib" path="libs/imageio-core-3.4.2.jar"/>
+	<classpathentry kind="lib" path="libs/common-image-3.4.2.jar"/>
+	<classpathentry kind="lib" path="libs/common-io-3.4.2.jar"/>
+	<classpathentry kind="lib" path="libs/common-lang-3.4.2.jar"/>
+	<classpathentry kind="lib" path="libs/imageio-metadata-3.4.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

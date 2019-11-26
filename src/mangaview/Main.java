@@ -11,10 +11,15 @@ import java.net.URLConnection;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+
 import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+
+import com.twelvemonkeys.imageio.plugins.jpeg.*;
 import javax.net.ssl.HttpsURLConnection;
 
 import org.json.JSONObject;
@@ -33,6 +38,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
+		ImageIO.scanForPlugins();
 		int argc = args.length;
 		if (argc == 0) {
 			Main m = new Main();
@@ -305,15 +311,16 @@ public class Main {
 		// download images
 		int prevBufferSize = 0;
 		for (int i = 0; i < urls.size(); i++) {
-			for(int j=0; j<prevBufferSize; j++)
-				System.out.print(' ');
-			System.out.print('\r');
-			String buf = "[" + (i + 1) + "/" + urls.size() + "] ";
-			prevBufferSize = buf.length();
-			System.out.print(buf);
-
 			boolean error = false, useSecond = false;
 			for (int tries = 10; tries >= 0; tries--) {
+				
+				for(int j=0; j<prevBufferSize; j++)
+					System.out.print(' ');
+				System.out.print('\r');
+				String buf = "[" + (i + 1) + "/" + urls.size() + "] ";
+				prevBufferSize = buf.length();
+				System.out.print(buf);
+				
 				try {
 
 					String target = hasSecond && useSecond && m.getImgs(true).get(i).length() > 1 ? m.getImgs(true).get(i)
@@ -384,6 +391,7 @@ public class Main {
 					break;
 
 				} catch (Exception e) {
+					e.printStackTrace();
 					if (!error && !useSecond) {
 						error = true;
 					} else if (error && !useSecond) {
