@@ -17,6 +17,7 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLHandshakeException;
 
 import org.json.JSONObject;
 
@@ -307,7 +308,7 @@ public class Main {
 		// download images
 		int prevBufferSize = 0;
 		for (int i = 0; i < urls.size(); i++) {
-			boolean error = false, useSecond = false;
+			boolean error = false, useSecond = false, forceHttp = false;
 			for (int tries = 10; tries >= 0; tries--) {
 				
 				for(int j=0; j<prevBufferSize; j++)
@@ -324,6 +325,11 @@ public class Main {
 					if(error && !useSecond){
                         target = target.indexOf("img.") > -1 ? target.replace("img.","s3.") : target.replace("://", "://s3.");
                     }
+					if(forceHttp) {
+						forceHttp = false;
+						target = target.replace("https", "http");
+					}
+					
 					buf = target+"\r";
 					prevBufferSize += buf.length();
 					System.out.print(buf);
@@ -386,8 +392,12 @@ public class Main {
 					in.close();
 					break;
 
-				} catch (Exception e) {
-					e.printStackTrace();
+				}catch(SSLHandshakeException e) {
+					tries--;
+					forceHttp = true;
+					continue;
+				}catch (Exception e) {
+					//e.printStackTrace();
 					if (!error && !useSecond) {
 						error = true;
 					} else if (error && !useSecond) {
